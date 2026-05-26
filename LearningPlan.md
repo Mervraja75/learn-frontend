@@ -20,7 +20,7 @@ Re-orient yourself with React Native and Expo, get a clean project running, and 
 ### Topics
 - Expo CLI setup and project creation (`npx create-expo-app`)
 - File/folder structure of a React Native project
-- Core components: `View`, `Text`, `TextInput`, `Button`, `ScrollView`
+- Core components: `View`, `Text`, `TextInput`, `Button`, `ScrollView`,
 - `StyleSheet` basics
 - Running on a simulator or your phone via Expo Go
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
-export default function ProfileCard() {
+export default function ProfileCard({ onLogout }) {
   const [note, setNote] = useState("");
 
   function handlePress() {
@@ -33,6 +33,10 @@ export default function ProfileCard() {
 
         <TouchableOpacity style={styles.button} onPress={handleNoteSubmit}>
           <Text style={styles.buttonText}>Save Note</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>
+          <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -83,6 +87,18 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 8,
     padding: 10,
+    fontSize: 16,
+  },
+  logoutButton: {
+    marginTop: 16,
+    backgroundColor: "#FF3B30",
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  logoutText: {
+    color: "#fff",
+    fontWeight: "bold",
     fontSize: 16,
   },
 });

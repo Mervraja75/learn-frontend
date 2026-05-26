@@ -1,19 +1,24 @@
-import { ThemedView } from '@/components/themed-view';
-import { StyleSheet } from 'react-native';
-import ProfileCard from '../../week1/ProfileCard';
+import { useState } from "react";
+import { StyleSheet, View } from "react-native";
+import ProfileCard from "../../week1/ProfileCard";
+import LoginScreen from "../../week2/LoginScreen";
 
 export default function HomeScreen() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   return (
-    <ThemedView style={styles.container}>
-      <ProfileCard />
-    </ThemedView>
+    <View style={styles.container}>
+      {isLoggedIn ? (
+        <ProfileCard onLogout={() => setIsLoggedIn(false)} />
+      ) : (
+        <LoginScreen onLogin={() => setIsLoggedIn(true)} />
+      )}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#f0f0f0',
   },
 });
