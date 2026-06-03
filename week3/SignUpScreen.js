@@ -1,26 +1,32 @@
 import * as SecureStore from "expo-secure-store";
 import { useState } from "react";
 import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { login } from "../week3/api";
+import { signUp } from "./api";
 
-export default function LoginScreen({ onLogin, onGoToSignUp }) {
+export default function SignUpScreen({ onSignUp, onGoToLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function handleLogin() {
-    if (email === "" || password === "") {
+  async function handleSignUp() {
+    if (email === "" || password === "" || confirmPassword === "") {
       Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert("Error", "Passwords do not match");
       return;
     }
 
     setLoading(true);
     try {
-      const response = await login(email, password);
+      const response = await signUp(email, password);
       await SecureStore.setItemAsync("token", response.token);
-      onLogin();
+      onSignUp();
     } catch (error) {
-      Alert.alert("Login Failed", error.message);
+      Alert.alert("Sign Up Failed", error.message);
     } finally {
       setLoading(false);
     }
@@ -28,7 +34,7 @@ export default function LoginScreen({ onLogin, onGoToSignUp }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome Back</Text>
+      <Text style={styles.title}>Create Account</Text>
 
       <TextInput
         style={styles.input}
@@ -47,16 +53,24 @@ export default function LoginScreen({ onLogin, onGoToSignUp }) {
         secureTextEntry
       />
 
+      <TextInput
+        style={styles.input}
+        placeholder="Confirm Password"
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+        secureTextEntry
+      />
+
       {loading ? (
         <ActivityIndicator size="large" color="#007AFF" style={{ marginTop: 16 }} />
       ) : (
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Login</Text>
+        <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+          <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
       )}
 
-      <TouchableOpacity onPress={onGoToSignUp} style={styles.signUpLink}>
-        <Text style={styles.signUpText}>Don't have an account? Sign Up</Text>
+      <TouchableOpacity onPress={onGoToLogin} style={styles.loginLink}>
+        <Text style={styles.loginText}>Already have an account? Login</Text>
       </TouchableOpacity>
     </View>
   );
@@ -96,11 +110,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
   },
-  signUpLink: {
+  loginLink: {
     marginTop: 16,
     alignItems: "center",
   },
-  signUpText: {
+  loginText: {
     color: "#007AFF",
     fontSize: 14,
   },
