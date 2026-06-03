@@ -1,8 +1,27 @@
-import { useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import * as SecureStore from "expo-secure-store";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { getProtectedData } from "../week3/api";
 
 export default function ProfileCard({ onLogout }) {
   const [note, setNote] = useState("");
+  const [apiMessage, setApiMessage] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchProtectedData() {
+      try {
+        const token = await SecureStore.getItemAsync("token");
+        const data = await getProtectedData(token);
+        setApiMessage(data.message);
+      } catch (error) {
+        Alert.alert("Error", error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchProtectedData();
+  }, []);
 
   function handlePress() {
     Alert.alert("Hello!", "Thanks for visiting my profile 👋");
@@ -18,6 +37,14 @@ export default function ProfileCard({ onLogout }) {
         <Text style={styles.name}>Mervin Raja</Text>
         <Text style={styles.bio}>Computer Science student learning React Native.</Text>
         <Text style={styles.bio}>Building a frontend that connects to a REST API.</Text>
+
+        {loading ? (
+          <ActivityIndicator size="large" color="#007AFF" style={{ marginTop: 16 }} />
+        ) : (
+          <View style={styles.apiBox}>
+            <Text style={styles.apiMessage}>API Response: {apiMessage}</Text>
+          </View>
+        )}
 
         <TouchableOpacity style={styles.button} onPress={handlePress}>
           <Text style={styles.buttonText}>Say Hello</Text>
@@ -63,6 +90,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#555",
     marginBottom: 4,
+  },
+  apiBox: {
+    marginTop: 16,
+    padding: 12,
+    backgroundColor: "#e8f4ff",
+    borderRadius: 8,
+  },
+  apiMessage: {
+    fontSize: 14,
+    color: "#007AFF",
   },
   button: {
     marginTop: 16,

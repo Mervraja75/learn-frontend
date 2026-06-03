@@ -28,3 +28,16 @@ export async function signUp(email, password) {
     }, 1000);
   });
 }
+
+// Simulates a protected API call that requires a token
+export async function getProtectedData(token) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (token) {
+        resolve({ message: "Hello from the protected API!", user: "Mervin" });
+      } else {
+        reject(new Error("No token found — please log in again"));
+      }
+    }, 1000);
+  });
+}
