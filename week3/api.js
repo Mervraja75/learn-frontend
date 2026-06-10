@@ -1,43 +1,52 @@
+import axios from "axios";
 
-// When your real API is ready, change this one line
-const BASE_URL = "https://mockapi.example.com";
+// Your real API
+const BASE_URL = "http://localhost:3000";
 
-// Simulates a login POST request
+// Real login POST request
 export async function login(email, password) {
-  // Mock response — replace with real API later
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (email === "test@test.com" && password === "password123") {
-        resolve({ token: "mock-jwt-token-abc123" });
-      } else {
-        reject(new Error("Invalid email or password"));
-      }
-    }, 1000); // simulates network delay
+  const response = await axios.post(`${BASE_URL}/auth/login`, {
+    email,
+    password,
   });
+  return response.data;
 }
 
-// Simulates a signup POST request
-export async function signUp(email, password) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (email && password) {
-        resolve({ token: "mock-jwt-token-abc123" });
-      } else {
-        reject(new Error("Please fill in all fields"));
-      }
-    }, 1000);
+// Real signup POST request
+export async function signUp(name, username, email, password) {
+  const response = await axios.post(`${BASE_URL}/auth/signup`, {
+    name,
+    username,
+    email,
+    hashed_password: password,
   });
+  return response.data;
 }
 
-// Simulates a protected API call that requires a token
-export async function getProtectedData(token) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (token) {
-        resolve({ message: "Hello from the protected API!", user: "Mervin" });
-      } else {
-        reject(new Error("No token found — please log in again"));
-      }
-    }, 1000);
+// Real GET all clients (protected)
+export async function getClients(token) {
+  const response = await axios.get(`${BASE_URL}/clients`, {
+    headers: { Authorization: `Bearer ${token}` },
   });
+  return response.data;
+}
+
+// Real GET one client (protected)
+export async function getClient(token, id) {
+  const response = await axios.get(`${BASE_URL}/clients/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+}
+
+// Real POST create client (protected)
+export async function createClient(token, name, email, phone, company) {
+  const response = await axios.post(
+    `${BASE_URL}/clients`,
+    { name, email, phone, company },
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  return response.data;
 }

@@ -1,9 +1,10 @@
-import * as SecureStore from "expo-secure-store";
 import { useState } from "react";
 import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { login } from "../week3/api";
+import { useAuth } from "../week4/AuthContext";
 
 export default function LoginScreen({ onLogin, onGoToSignUp }) {
+  const { saveToken } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -17,7 +18,7 @@ export default function LoginScreen({ onLogin, onGoToSignUp }) {
     setLoading(true);
     try {
       const response = await login(email, password);
-      await SecureStore.setItemAsync("token", response.token);
+      await saveToken(response.token);
       onLogin();
     } catch (error) {
       Alert.alert("Login Failed", error.message);

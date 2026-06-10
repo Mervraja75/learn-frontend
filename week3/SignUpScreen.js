@@ -1,16 +1,19 @@
-import * as SecureStore from "expo-secure-store";
 import { useState } from "react";
-import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
+import { useAuth } from "../week4/AuthContext";
 import { signUp } from "./api";
 
 export default function SignUpScreen({ onSignUp, onGoToLogin }) {
+  const { saveToken } = useAuth();
+  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleSignUp() {
-    if (email === "" || password === "" || confirmPassword === "") {
+    if (name === "" || username === "" || email === "" || password === "" || confirmPassword === "") {
       Alert.alert("Error", "Please fill in all fields");
       return;
     }
@@ -22,8 +25,11 @@ export default function SignUpScreen({ onSignUp, onGoToLogin }) {
 
     setLoading(true);
     try {
-      const response = await signUp(email, password);
-      await SecureStore.setItemAsync("token", response.token);
+      await signUp(name, username, email, password);
+      // After signup, log in to get token
+      const { login } = await import("./api");
+      const response = await login(email, password);
+      await saveToken(response.token);
       onSignUp();
     } catch (error) {
       Alert.alert("Sign Up Failed", error.message);
@@ -33,8 +39,23 @@ export default function SignUpScreen({ onSignUp, onGoToLogin }) {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Create Account</Text>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Full Name"
+        value={name}
+        onChangeText={setName}
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
+        autoCapitalize="none"
+      />
 
       <TextInput
         style={styles.input}
@@ -72,13 +93,13 @@ export default function SignUpScreen({ onSignUp, onGoToLogin }) {
       <TouchableOpacity onPress={onGoToLogin} style={styles.loginLink}>
         <Text style={styles.loginText}>Already have an account? Login</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: "center",
     padding: 24,
     backgroundColor: "#f0f0f0",
