@@ -15,6 +15,7 @@ export default function AppNavigator() {
   const [showSignUp, setShowSignUp] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
   const [showCreateClient, setShowCreateClient] = useState(false);
+  const [clientsKey, setClientsKey] = useState(0);
 
   async function handleLogout() {
     await SecureStore.deleteItemAsync("token");
@@ -29,7 +30,10 @@ export default function AppNavigator() {
             <Stack.Screen name="CreateClient" options={{ headerShown: false }}>
               {() => (
                 <CreateClientScreen
-                  onClientCreated={() => setShowCreateClient(false)}
+                  onClientCreated={() => {
+                    setShowCreateClient(false);
+                    setClientsKey((prev) => prev + 1);
+                  }}
                   onBack={() => setShowCreateClient(false)}
                 />
               )}
@@ -47,6 +51,7 @@ export default function AppNavigator() {
             <Stack.Screen name="Clients" options={{ headerShown: false }}>
               {() => (
                 <ClientsScreen
+                  key={clientsKey}
                   onViewClient={(client) => setSelectedClient(client)}
                   onCreateClient={() => setShowCreateClient(true)}
                   onLogout={handleLogout}
