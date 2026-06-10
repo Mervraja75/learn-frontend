@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
     ActivityIndicator,
     Alert,
     FlatList,
+    RefreshControl,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -15,18 +16,26 @@ export default function ClientsScreen({ onViewClient, onCreateClient, onLogout }
   const { token } = useAuth();
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  async function fetchClients() {
+    try {
+      const data = await getClients(token);
+      setClients(data);
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }
 
   useEffect(() => {
-    async function fetchClients() {
-      try {
-        const data = await getClients(token);
-        setClients(data);
-      } catch (error) {
-        Alert.alert("Error", error.message);
-      } finally {
-        setLoading(false);
-      }
-    }
+    fetchClients();
+  }, []);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
     fetchClients();
   }, []);
 
@@ -45,6 +54,9 @@ export default function ClientsScreen({ onViewClient, onCreateClient, onLogout }
       <FlatList
         data={clients}
         keyExtractor={(item) => item._id}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.clientCard}
@@ -128,6 +140,12 @@ const styles = StyleSheet.create({
   logoutText: {
     color: "#fff",
     fontWeight: "bold",
+    fontSize: 16,
+  },
+  emptyText: {
+    textAlign: "center",
+    color: "#999",
+    marginTop: 40,
     fontSize: 16,
   },
 });
