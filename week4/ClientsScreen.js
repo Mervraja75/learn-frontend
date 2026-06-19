@@ -1,18 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    FlatList,
-    RefreshControl,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { getClients } from "../week3/api";
 import { useAuth } from "./AuthContext";
 
-export default function ClientsScreen({ onViewClient, onCreateClient, onLogout }) {
+export default function ClientsScreen({ onViewClient, onCreateClient }) {
   const { token } = useAuth();
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -74,10 +74,6 @@ export default function ClientsScreen({ onViewClient, onCreateClient, onLogout }
       <TouchableOpacity style={styles.createButton} onPress={onCreateClient}>
         <Text style={styles.createButtonText}>+ Add Client</Text>
       </TouchableOpacity>
-
-      <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>
-        <Text style={styles.logoutText}>Logout</Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -126,18 +122,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   createButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  logoutButton: {
-    backgroundColor: "#FF3B30",
-    padding: 14,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 12,
-  },
-  logoutText: {
     color: "#fff",
     fontWeight: "bold",
     fontSize: 16,

@@ -26,10 +26,9 @@ export default function SignUpScreen({ onSignUp, onGoToLogin }) {
     setLoading(true);
     try {
       await signUp(name, username, email, password);
-      // After signup, log in to get token
       const { login } = await import("./api");
       const response = await login(email, password);
-      await saveToken(response.token);
+      await saveToken(response.token, response.user);
       onSignUp();
     } catch (error) {
       Alert.alert("Sign Up Failed", error.message);
