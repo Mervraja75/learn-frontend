@@ -1,0 +1,13 @@
+# Reflection
+
+## What did you ask the AI to do?
+I collaborated with the AI over five weeks to develop a React Native frontend. Together we worked on setting up the project with Expo, building core components like a profile card with TextInput and ScrollView, setting up React Navigation for screen transitions, implementing a login and signup flow with JWT token storage using expo-secure-store, creating an AuthContext for global state management, and building out the clients screens — view all, view one, and create. I also worked with the AI to debug errors along the way, like fixing navigation issues, resolving the AuthContext token problem, and connecting the frontend to my real backend API.
+
+## What did it do well?
+The AI was really good at explaining concepts in simple terms whenever I didn't understand something. It always gave me full updated files instead of just showing me the changed lines, which made it easier to follow along. It was also good at breaking things down step by step and we worked on one thing at a time and made sure it worked before moving on. When errors came up it was quick at helping me diagnose the problem, like when the iOS simulator timed out or when the token wasn't being shared across screens.
+
+## What did it get wrong or what did you have to fix?
+A few things needed fixing along the way. The AuthContext wasn't being used correctly at first such as the LoginScreen was saving the token directly to SecureStore instead of going through AuthContext, which meant the token wasn't available to other screens. I also had to figure out that app/index.tsx was conflicting with app/(tabs)/index.tsx and causing the wrong screen to load. The iOS simulator also had timeout issues a few times that required restarting Expo. These weren't things the AI got completely wrong, but they required some back and forth between me and the AI to figure out.
+
+## What did I learn from working with it?
+I learned that AI is most useful when you understand what you're building well enough to ask the right questions. When I just copied code without reading it I got confused later when something broke. But when I collaborated with the AI to understand my code and AI code and why something worked, I started to understand the difference and how certain codes needed to be implemented. Its like how AuthContext shares state, or why TouchableOpacity fades on press. It actually helped me understand React Native much better. I also learned that AI doesn't always get things right some times, and being able to read the code and spot the problem is just as important as knowing how to ask for help. I learned that I have to proof read the code and do some research on why certain codes have to be this way to work.
