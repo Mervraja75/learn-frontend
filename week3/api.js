@@ -9,7 +9,7 @@ export async function login(email, password) {
     email,
     password,
   });
-  return response.data;
+  return response.data; // returns { token }
 }
 
 // Real signup POST request
@@ -26,7 +26,9 @@ export async function signUp(name, username, email, password) {
 // Real GET all clients (protected)
 export async function getClients(token) {
   const response = await axios.get(`${BASE_URL}/clients`, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
   return response.data;
 }
@@ -34,7 +36,9 @@ export async function getClients(token) {
 // Real GET one client (protected)
 export async function getClient(token, id) {
   const response = await axios.get(`${BASE_URL}/clients/${id}`, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
   return response.data;
 }
@@ -45,7 +49,9 @@ export async function createClient(token, name, email, phone, company) {
     `${BASE_URL}/clients`,
     { name, email, phone, company },
     {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     }
   );
   return response.data;
