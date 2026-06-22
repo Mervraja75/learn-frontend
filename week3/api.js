@@ -76,3 +76,31 @@ export async function updateClient(token, id, name, email, phone, company) {
   );
   return response.data;
 }
+
+// Real GET all tickets (protected)
+export async function getTickets(token) {
+  const response = await axios.get(`${BASE_URL}/tickets`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+}
+
+// Real GET one ticket (protected)
+export async function getTicket(token, id) {
+  const response = await axios.get(`${BASE_URL}/tickets/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+}
+
+// Real POST create ticket (protected)
+export async function createTicket(token, title, description, priority, client_id) {
+  const response = await axios.post(
+    `${BASE_URL}/tickets`,
+    { title, description, priority, client_id },
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  return response.data;
+}
