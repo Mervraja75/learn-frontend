@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { getClient } from "../week3/api";
+import { deleteClient, getClient } from "../week3/api";
 import { useAuth } from "./AuthContext";
 
-export default function ClientDetailScreen({ client, onBack }) {
+export default function ClientDetailScreen({ client, onBack, onDelete, onEdit }) {
   const { token } = useAuth();
   const [clientDetail, setClientDetail] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,6 +28,28 @@ export default function ClientDetailScreen({ client, onBack }) {
     }
     fetchClient();
   }, []);
+
+  async function handleDelete() {
+    Alert.alert(
+      "Delete Client",
+      `Are you sure you want to delete ${clientDetail.name}?`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteClient(token, clientDetail._id);
+              onDelete();
+            } catch (error) {
+              Alert.alert("Error", error.message);
+            }
+          },
+        },
+      ]
+    );
+  }
 
   if (loading) {
     return (
@@ -55,6 +77,14 @@ export default function ClientDetailScreen({ client, onBack }) {
         <Text style={styles.label}>Phone</Text>
         <Text style={styles.value}>{clientDetail.phone}</Text>
       </View>
+
+      <TouchableOpacity style={styles.editButton} onPress={() => onEdit(clientDetail)}>
+        <Text style={styles.editText}>Edit Client</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
+        <Text style={styles.deleteText}>Delete Client</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -112,5 +142,29 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 16,
     color: "#333",
+  },
+  editButton: {
+    backgroundColor: "#007AFF",
+    padding: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 16,
+  },
+  editText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  deleteButton: {
+    backgroundColor: "#FF3B30",
+    padding: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 12,
+  },
+  deleteText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
   },
 });

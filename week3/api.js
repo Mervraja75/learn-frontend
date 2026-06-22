@@ -56,3 +56,23 @@ export async function createClient(token, name, email, phone, company) {
   );
   return response.data;
 }
+
+// Real DELETE client (protected)
+export async function deleteClient(token, id) {
+  const response = await axios.delete(`${BASE_URL}/clients/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+}
+
+// Real PUT update client (protected)
+export async function updateClient(token, id, name, email, phone, company) {
+  const response = await axios.put(
+    `${BASE_URL}/clients/${id}`,
+    { name, email, phone, company },
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  return response.data;
+}

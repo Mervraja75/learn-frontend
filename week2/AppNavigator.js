@@ -5,6 +5,7 @@ import { useAuth } from "../week4/AuthContext";
 import ClientDetailScreen from "../week4/ClientDetailScreen";
 import ClientsScreen from "../week4/ClientsScreen";
 import CreateClientScreen from "../week4/CreateClientScreen";
+import UpdateClientScreen from "../week4/UpdateClientScreen";
 import LoginScreen from "./LoginScreen";
 
 const Stack = createNativeStackNavigator();
@@ -14,10 +15,22 @@ export default function AppNavigator() {
   const [showSignUp, setShowSignUp] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
   const [showCreateClient, setShowCreateClient] = useState(false);
+  const [showEditClient, setShowEditClient] = useState(false);
+  const [clientToEdit, setClientToEdit] = useState(null);
   const [clientsKey, setClientsKey] = useState(0);
 
   async function handleLogout() {
     await clearToken();
+  }
+
+  function handleDelete() {
+    setSelectedClient(null);
+    setClientsKey((prev) => prev + 1);
+  }
+
+  function handleEdit(client) {
+    setClientToEdit(client);
+    setShowEditClient(true);
   }
 
   return (
@@ -35,12 +48,28 @@ export default function AppNavigator() {
               />
             )}
           </Stack.Screen>
+        ) : showEditClient ? (
+          <Stack.Screen name="EditClient" options={{ headerShown: false }}>
+            {() => (
+              <UpdateClientScreen
+                client={clientToEdit}
+                onClientUpdated={() => {
+                  setShowEditClient(false);
+                  setSelectedClient(null);
+                  setClientsKey((prev) => prev + 1);
+                }}
+                onBack={() => setShowEditClient(false)}
+              />
+            )}
+          </Stack.Screen>
         ) : selectedClient ? (
           <Stack.Screen name="ClientDetail" options={{ headerShown: false }}>
             {() => (
               <ClientDetailScreen
                 client={selectedClient}
                 onBack={() => setSelectedClient(null)}
+                onDelete={handleDelete}
+                onEdit={handleEdit}
               />
             )}
           </Stack.Screen>
